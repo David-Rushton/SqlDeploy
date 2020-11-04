@@ -1,0 +1,17 @@
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+WORKDIR /src
+COPY SqlDeploy.csproj ./
+RUN dotnet restore SqlDeploy.csproj
+COPY . .
+RUN dotnet build --output /app/build
+
+
+FROM build AS publish
+WORKDIR /src
+RUN  dotnet publish --configuration Release --runtime linux-x64 --output /app/publish
+
+
+FROM mcr.microsoft.com/dotnet/core/runtime:3.1 as app
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT [ "dotnet", "SqlDeploy.dll" ]

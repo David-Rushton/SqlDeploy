@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+
+  db:
+    build: src/SqlDeploy.Database
+    ports:
+      - 14333:1433
+
+  # compose file args to optionally not do below?
+  migrate_app:
+      build: src/SqlDeploy
+      environment:
+        - SQLDEPLOY_TARGET__CONNECTIONSTRING=Server=db,1433;Database=master;User id=sa;Password=abc!!123
+      depends_on:
+        - db
