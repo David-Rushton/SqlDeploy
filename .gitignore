@@ -1,5 +1,5 @@
 # Local dev env appsettings
-appsettings..json
+appsettings.*.json
 
 
 ## Ignore Visual Studio temporary files, build results, and
