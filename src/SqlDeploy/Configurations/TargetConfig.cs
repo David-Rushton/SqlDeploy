@@ -20,7 +20,7 @@ namespace SqlDeploy.Configurations
 
 
         public override string ToString() =>
-            $"Server: {Server}\nDatabase: {Database}\nUser id: {UserId}\nPassword: {Password}\n"
+            $"Server: {Server}\nDatabase: {Database}\nUser id: {UserId}\nPassword: ********\n"
         ;
 
 
