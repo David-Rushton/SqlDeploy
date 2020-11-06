@@ -11,6 +11,9 @@ services:
   migrate_app:
       build: src/SqlDeploy
       environment:
-        - SQLDEPLOY_TARGET__CONNECTIONSTRING=Server=db,1433;Database=master;User id=sa;Password=abc!!123
+        - SQLDEPLOY_TARGET__SERVER=db
+        - SQLDEPLOY_TARGET__DATABASE=TestDeploy
+        - SQLDEPLOY_TARGET__USERID=sa
+        - SQLDEPLOY_TARGET__PASSWORD=abc!!123
       depends_on:
         - db

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Extensions.Hosting;
 using SqlDeploy.Configurations;
+using SqlDeploy.Models;
 
 
 namespace SqlDeploy
@@ -42,20 +43,18 @@ namespace SqlDeploy
 
             // data movements
 
+
+            //
+
+
+
+
             var host = GetHost(args);
-            var target = host.Services.GetService<TargetConfiguration>();
+            var logger = host.Services.GetService<ILogger>();
+            var dbDeploySchema = host.Services.GetService<DatabaseDeploySchema>();
 
-            Thread.Sleep(30000);
-            Console.WriteLine("Waking up");
-
-
-            using var connection = new SqlConnection(target.ConnectionString);
-            var result = connection.Query<SqlVersion>("SELECT @@VERSION AS Version").FirstOrDefault();
-            Console.WriteLine(result.Version);
-
-
-
-
+            dbDeploySchema.UpdateSchema();
+            logger.Information("Database migration complete");
         }
 
         static IHost GetHost(string[] args) =>
@@ -69,6 +68,8 @@ namespace SqlDeploy
                 .ConfigureServices((host, services) =>
                 {
                     services.AddSingleton(host.Configuration.GetSection("target").Get<TargetConfiguration>());
+
+                    services.AddSqlDeployModels();
                 })
                 .UseSerilog((context, services, config) =>
                 {
@@ -77,6 +78,7 @@ namespace SqlDeploy
                         .WriteTo.Console()
                     ;
                 })
+
                 .Build()
         ;
     }
