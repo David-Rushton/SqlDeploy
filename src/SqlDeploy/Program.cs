@@ -10,51 +10,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Extensions.Hosting;
-using SqlDeploy.Configurations;
+using SqlDeploy.Configs;
 using SqlDeploy.Models;
 
 
 namespace SqlDeploy
 {
-    public class SqlVersion
-    {
-        public string Version { get; set; }
-    }
-
-
     class Program
     {
         static void Main(string[] args)
         {
-            // test connection
-            // deploy vc schema
-            // file groups
-            // sequences
-            // tables
-                // synonyms
-            // views
-            // types
-            // procedures
-            // security
-
-
-            // functions
-
-
-            // data movements
-
-
-            //
-
-
-
-
-            var host = GetHost(args);
-            var logger = host.Services.GetService<ILogger>();
-            var dbDeploySchema = host.Services.GetService<DatabaseDeploySchema>();
-
-            dbDeploySchema.UpdateSchema();
-            logger.Information("Database migration complete");
+            var app = GetHost(args).Services.GetService<App>();
+            app.Invoke();
         }
 
         static IHost GetHost(string[] args) =>
@@ -67,8 +34,8 @@ namespace SqlDeploy
                 })
                 .ConfigureServices((host, services) =>
                 {
-                    services.AddSingleton(host.Configuration.GetSection("target").Get<TargetConfiguration>());
-
+                    services.AddSingleton(host.Configuration.GetSection("source").Get<SourceConfig>());
+                    services.AddSingleton(host.Configuration.GetSection("target").Get<TargetConfig>());
                     services.AddSqlDeployModels();
                 })
                 .UseSerilog((context, services, config) =>
@@ -78,7 +45,6 @@ namespace SqlDeploy
                         .WriteTo.Console()
                     ;
                 })
-
                 .Build()
         ;
     }
