@@ -14,4 +14,5 @@ RUN  dotnet publish --configuration Release --runtime linux-x64 --output /app/pu
 FROM mcr.microsoft.com/dotnet/core/runtime:3.1 as app
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY ../SqlDeploy.Scripts /app-scripts
 ENTRYPOINT [ "dotnet", "SqlDeploy.dll" ]
