@@ -15,5 +15,7 @@ services:
         - SQLDEPLOY_TARGET__DATABASE=TestDeploy
         - SQLDEPLOY_TARGET__USERID=sa
         - SQLDEPLOY_TARGET__PASSWORD=abc!!123
+        - SQLDEPLOY_SOURCE_ROOT=/app-scripts/
+        - SQLDEPLOY_TESTIDEMPOTENT=false
       depends_on:
         - db
