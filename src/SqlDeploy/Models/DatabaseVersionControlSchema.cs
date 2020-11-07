@@ -2,39 +2,33 @@ using System;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using SqlDeploy.Configurations;
+using SqlDeploy.Configs;
 
 
 namespace SqlDeploy.Models
 {
-    public class DatabaseDeploySchema
+    public class DatabaseVersionControlSchema
     {
-        readonly TargetConfiguration _targetConfiguration;
-        readonly ILogger<DatabaseDeploySchema> _logger;
+        readonly TargetConfig _targetConfig;
+        readonly ILogger<DatabaseVersionControlSchema> _logger;
 
 
-        public DatabaseDeploySchema(ILogger<DatabaseDeploySchema> logger, TargetConfiguration targetConfiguration) =>
-            (_logger, _targetConfiguration) = (logger, targetConfiguration)
+        public DatabaseVersionControlSchema(ILogger<DatabaseVersionControlSchema> logger, TargetConfig targetConfig) =>
+            (_logger, _targetConfig) = (logger, targetConfig)
         ;
 
 
-        public void UpdateSchema()
+        public void CreateOrUpdateSchema()
         {
-            _logger.LogInformation($"Updating database:\n{_targetConfiguration}");
+            using var targetConnection = new SqlConnection(_targetConfig.TargetConnectionString);
+            targetConnection.InfoMessage += (o, e) => _logger.LogInformation($"{e.Message}");
 
-            using var masterConnection = new SqlConnection(_targetConfiguration.MasterConnectionString);
-            using var targetConnection = new SqlConnection(_targetConfiguration.TargetConnectionString);
-
-            masterConnection.InfoMessage += SqlConnectionInformationEventHandler;
-            targetConnection.InfoMessage += SqlConnectionInformationEventHandler;
-
-            masterConnection.Execute(CreateTargetDatabaseIfNotExistsStatement,
-                new
-                {
-                    Database = _targetConfiguration.Database
-                }
-            );
             targetConnection.Execute(CreateOrUpdateVersionControlSchemaStatement);
+        }
+
+        public void RecordMigrationStart()
+        {
+
         }
 
 
