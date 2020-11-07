@@ -10,7 +10,10 @@ namespace SqlDeploy
     {
         public static void AddSqlDeployModels(this IServiceCollection services)
         {
-            services.AddSingleton<DatabaseDeploySchema>();
+            services.AddSingleton<TargetSqlServer>();
+            services.AddSingleton<DatabaseVersionControlSchema>();
+            services.AddSingleton<DatabaseMigrationScripts>();
+            services.AddSingleton<App>();
         }
     }
 }
