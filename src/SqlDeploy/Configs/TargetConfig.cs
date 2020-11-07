@@ -2,9 +2,9 @@ using System;
 using Microsoft.Data.SqlClient;
 
 
-namespace SqlDeploy.Configurations
+namespace SqlDeploy.Configs
 {
-    public class TargetConfiguration
+    public class TargetConfig
     {
         public string Server { get; set; }
 
@@ -20,7 +20,7 @@ namespace SqlDeploy.Configurations
 
 
         public override string ToString() =>
-            $"Server: {Server}\nDatabase: {Database}\nUser id: {UserId}\nPassword: ********\n"
+            $"Server: {Server} | Database: {Database} | User id: {UserId} | Password: ********\n"
         ;
 
 
